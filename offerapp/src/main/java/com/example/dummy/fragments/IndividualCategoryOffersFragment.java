@@ -8,27 +8,25 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
-import android.widget.ExpandableListView;
+import android.widget.AdapterView;
+import android.widget.ListView;
 
 import com.example.dummy.R;
 import com.example.dummy.activities.MainActivity;
-import com.example.dummy.adapters.ExpandableListReminderAdapter;
+import com.example.dummy.adapters.OfferAdapter;
 import com.example.dummy.asynctasks.AsyncProcess;
-import com.example.dummy.beans.ReminderBeans;
+import com.example.dummy.beans.OfferBeans;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 
-public class ReminderFragment extends Fragment {
+public class IndividualCategoryOffersFragment extends Fragment {
 
-
+    private ListView list_view;
     private LoginTask lat;
-    private ExpandableListReminderAdapter listAdapter;
-    private ExpandableListView expListView;
-    private List<String> listDataHeader;
-    private HashMap<String, ArrayList<ReminderBeans>> listDataChild;
-    public ReminderFragment() {
+    private ArrayList<OfferBeans> arraylist;
+
+    public IndividualCategoryOffersFragment() {
         super();
 
     }
@@ -36,19 +34,15 @@ public class ReminderFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle args) {
 
-        View view = inflater.inflate(R.layout.lay_reminder, container, false);
-        prepareListData();
-        expListView = (ExpandableListView) view.findViewById(R.id.lv_Exp);
-        prepareListData();
-        listAdapter = new ExpandableListReminderAdapter(getActivity(), listDataHeader, listDataChild);
-        expListView.setAdapter(listAdapter);
-
-        // to prevent the group collapse
-        expListView.setOnGroupClickListener(new ExpandableListView.OnGroupClickListener() {
+        View view = inflater.inflate(R.layout.lay_individual_category_offer, container, false);
+        list_view = (ListView) view.findViewById(R.id.list_view);
+        initData();
+        OfferAdapter offferAdapter = new OfferAdapter(getActivity(), arraylist);
+        list_view.setAdapter(offferAdapter);
+        list_view.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
-            public boolean onGroupClick(ExpandableListView parent, View v, int groupPosition, long id) {
-                // Doing nothing
-                return true;
+            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                MainActivity.getMainScreenActivity().changeNavigationContentFragment(new OfferFragment(),true);
             }
         });
         getActivity().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN);
@@ -58,7 +52,7 @@ public class ReminderFragment extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
-        MainActivity.getMainScreenActivity().setActionBarTitle(getString(R.string.screen_reminder));
+            MainActivity.getMainScreenActivity().setActionBarTitle(getString(R.string.screen_individual_category_offer));
     }
 
     @Override
@@ -147,33 +141,13 @@ public class ReminderFragment extends Fragment {
         };
     }
 
-    private void prepareListData() {
-        listDataHeader = new ArrayList<String>();
-        listDataChild = new HashMap<String, ArrayList<ReminderBeans>>();
 
-        // Adding header data
-        listDataHeader.add("Sep 2017");
-        listDataHeader.add("Aug 2017");
-        listDataHeader.add("July 2017");
+    private void initData() {
+        arraylist = new ArrayList<>();
+        arraylist.add(new OfferBeans(getActivity().getDrawable(R.drawable.bank), "Axis Bank", "Get a free movie ticket on mobile bill payment,Promocode: 12344 Offer Vaild till 31st March 2017"));
+        arraylist.add(new OfferBeans(getActivity().getDrawable(R.drawable.bank), "Paytm", "Get a free movie ticket on mobile bill payment"));
+        arraylist.add(new OfferBeans(getActivity().getDrawable(R.drawable.bank), "ICICI Bank", "Get a free movie ticket on mobile bill payment"));
 
-        // Adding child data
-        ArrayList<ReminderBeans> header_1 = new ArrayList<ReminderBeans>();
-        header_1.add(new ReminderBeans(getActivity().getDrawable(R.drawable.bank),"Axis Bank", "9874561230","Due on 20-june-17", "1536"));
-        header_1.add(new ReminderBeans(getActivity().getDrawable(R.drawable.bank),"Axis Bank", "9874561230","Due on 20-june-17", "1536"));
-        header_1.add(new ReminderBeans(getActivity().getDrawable(R.drawable.bank),"Citi Bank",  "4512789632","Due on 22-june-17", "12332"));
-
-        ArrayList<ReminderBeans> header_2 = new ArrayList<ReminderBeans>();
-        header_2.add(new ReminderBeans(getActivity().getDrawable(R.drawable.bank),"Citi Bank",  "XXXX147852","Due on 27-june-17", "2341"));
-        header_2.add(new ReminderBeans(getActivity().getDrawable(R.drawable.bank),"SBI", "XXXXX78456","Due on 11-june-17", "6534"));
-
-
-        ArrayList<ReminderBeans> header_3 = new ArrayList<ReminderBeans>();
-        header_3.add(new ReminderBeans(getActivity().getDrawable(R.drawable.bank),"Axis Bank",  "9874561230","Due on 20-june-17", "8769"));
-        header_3.add(new ReminderBeans(getActivity().getDrawable(R.drawable.bank),"Citi Bank",  "9874561230","Due on 20-june-17", "3858"));
-
-
-        listDataChild.put(listDataHeader.get(0), header_1); // Header, Child data
-        listDataChild.put(listDataHeader.get(1), header_2);
-        listDataChild.put(listDataHeader.get(2), header_3);
     }
+
 }

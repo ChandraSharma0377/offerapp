@@ -49,4 +49,7 @@
     <string name="screen_individual_transaction">Individual Transaction</string>
     <string name="screen_reminder">All Reminders</string>
     <string name="screen_spend_individual_month">Spend Individual Month</string>
+    <string name="screen_all_offers">All Offers</string>
+    <string name="all_offers">All Offers</string>
+    <string name="screen_individual_category_offer">Individual Category Offers</string>
 </resources>

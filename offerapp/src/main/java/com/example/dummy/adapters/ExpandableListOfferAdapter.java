@@ -7,27 +7,29 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseExpandableListAdapter;
-import android.widget.CheckBox;
 import android.widget.ExpandableListView;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.example.dummy.R;
-import com.example.dummy.beans.ReminderBeans;
+import com.example.dummy.activities.MainActivity;
+import com.example.dummy.beans.OfferBeans;
+import com.example.dummy.fragments.IndividualCategoryOffersFragment;
+import com.example.dummy.fragments.OfferFragment;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-public class ExpandableListReminderAdapter extends BaseExpandableListAdapter {
+public class ExpandableListOfferAdapter extends BaseExpandableListAdapter {
 
 	private Context context;
 	private List<String> listDataHeader; // header titles
 	// child data in format of header title, child title
-	private HashMap<String, ArrayList<ReminderBeans>> listDataChild;
+	private HashMap<String, ArrayList<OfferBeans>> listDataChild;
 
-	public ExpandableListReminderAdapter(Context context, List<String> listDataHeader,
-                                         HashMap<String, ArrayList<ReminderBeans>>listChildData) {
+	public ExpandableListOfferAdapter(Context context, List<String> listDataHeader,
+                                      HashMap<String, ArrayList<OfferBeans>>listChildData) {
 		this.context = context;
 		this.listDataHeader = listDataHeader;
 		this.listDataChild = listChildData;
@@ -45,30 +47,36 @@ public class ExpandableListReminderAdapter extends BaseExpandableListAdapter {
 	}
 
 	@Override
-	public View getChildView(int groupPosition, final int childPosition,
-			boolean isLastChild, View convertView, ViewGroup parent) {
+	public View getChildView(final int groupPosition, final int childPosition,
+                             boolean isLastChild, View convertView, ViewGroup parent) {
 
-		final ReminderBeans reminderBeans = (ReminderBeans) getChild(groupPosition, childPosition);
+		final OfferBeans offerBeans = (OfferBeans) getChild(groupPosition, childPosition);
 		final ViewHolder holder;
 		if (convertView == null) {
 			LayoutInflater inflater = ((Activity) context).getLayoutInflater();
-			convertView = inflater.inflate(R.layout.list_item_reminder, null);
+			convertView = inflater.inflate(R.layout.list_item_offer, null);
 			holder = new ViewHolder();
 			holder.tvheader = (TextView) convertView.findViewById(R.id.tvheader);
 			holder.tvsubheader = (TextView) convertView.findViewById(R.id.tvsubheader);
-			holder.tvamount = (TextView) convertView.findViewById(R.id.tvamount);
-			holder.tvtransactiondate = (TextView) convertView.findViewById(R.id.tvtransactiondate);
 			holder.ivthumb = (ImageView) convertView.findViewById(R.id.ivthumb);
-			holder.cbpaid = (CheckBox) convertView.findViewById(R.id.cbpaid);
 			convertView.setTag(holder);
 		} else {
 			holder = (ViewHolder) convertView.getTag();
 		}
-		holder.tvheader.setText(reminderBeans.getBankname());
-		holder.tvsubheader.setText(reminderBeans.getTransactionNo());
-		holder.tvamount.setText(context.getString(R.string.Rs)+" "+reminderBeans.getAmount());
-		holder.tvtransactiondate.setText(reminderBeans.getTransactionDate());
-		holder.ivthumb.setImageDrawable(reminderBeans.getThumb());
+		holder.tvheader.setText(offerBeans.getMerchantName());
+		holder.tvsubheader.setText(offerBeans.getOfferDetails());
+		holder.ivthumb.setImageDrawable(offerBeans.getThumb());
+        convertView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if(groupPosition == 0){
+                    MainActivity.getMainScreenActivity().changeNavigationContentFragment(new OfferFragment(),true);
+                }else{
+					MainActivity.getMainScreenActivity().changeNavigationContentFragment(new IndividualCategoryOffersFragment(),true);
+
+				}
+            }
+        });
 		return convertView;
 	}
 
@@ -127,9 +135,6 @@ public class ExpandableListReminderAdapter extends BaseExpandableListAdapter {
 	public static class ViewHolder {
 		TextView tvheader;
 		TextView tvsubheader;
-		TextView tvamount;
-		TextView tvtransactiondate;
-		CheckBox cbpaid;
 		ImageView ivthumb;
 	}
 }

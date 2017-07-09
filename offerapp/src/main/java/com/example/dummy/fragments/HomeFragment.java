@@ -131,6 +131,8 @@ public class HomeFragment extends Fragment implements View.OnClickListener{
 
                 break;
             case R.id.tv_show_all_offer:
+                MainActivity.getMainScreenActivity().changeNavigationContentFragment(new AllOffersFragment(),true);
+
                 break;
         }
     }

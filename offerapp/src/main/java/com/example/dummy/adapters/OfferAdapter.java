@@ -10,9 +10,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.example.dummy.R;
-import com.example.dummy.beans.IncomeBeans;
 import com.example.dummy.beans.OfferBeans;
-import com.example.dummy.utility.Helper;
 
 import java.util.ArrayList;
 
