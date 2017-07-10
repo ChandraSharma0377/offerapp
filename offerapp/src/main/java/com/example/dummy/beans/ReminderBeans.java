@@ -2,9 +2,6 @@ package com.example.dummy.beans;
 
 import android.graphics.drawable.Drawable;
 
-/**
- * Created by C0678642 on 7/3/2017.
- */
 
 public class ReminderBeans {
 

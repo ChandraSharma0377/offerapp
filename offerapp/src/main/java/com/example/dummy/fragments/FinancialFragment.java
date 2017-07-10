@@ -90,59 +90,7 @@ public class FinancialFragment extends Fragment {
 
 
         bar_chart = (BarChart)view.findViewById(R.id.bar_chart);
-        bar_chart.setDrawBarShadow(false);
-        bar_chart.setDrawValueAboveBar(true);
-        bar_chart.getDescription().setEnabled(false);
-
-        // if more than 60 entries are displayed in the chart, no values will be
-        // drawn
-        bar_chart.setMaxVisibleValueCount(60);
-
-        // scaling can now only be done on x- and y-axis separately
-        bar_chart.setPinchZoom(false);
-
-        bar_chart.setDrawGridBackground(false);
-        // bar_chart.setDrawYLabels(false);
-
-        IAxisValueFormatter xAxisFormatter = new DayAxisValueFormatter(bar_chart);
-
-        XAxis xAxis = bar_chart.getXAxis();
-        xAxis.setPosition(XAxis.XAxisPosition.BOTTOM);
-        //  xAxis.setTypeface(mTfLight);
-        xAxis.setDrawGridLines(false);
-        xAxis.setGranularity(1f); // only intervals of 1 day
-        xAxis.setLabelCount(7);
-        xAxis.setValueFormatter(xAxisFormatter);
-
-        IAxisValueFormatter custom = new MyAxisValueFormatter();
-
-        YAxis leftAxis = bar_chart.getAxisLeft();
-        // leftAxis.setTypeface(mTfLight);
-        leftAxis.setLabelCount(8, false);
-        leftAxis.setValueFormatter(custom);
-        leftAxis.setPosition(YAxis.YAxisLabelPosition.OUTSIDE_CHART);
-        leftAxis.setSpaceTop(15f);
-        leftAxis.setAxisMinimum(0f); // this replaces setStartAtZero(true)
-
-        YAxis rightAxis = bar_chart.getAxisRight();
-        rightAxis.setDrawGridLines(false);
-        //   rightAxis.setTypeface(mTfLight);
-        rightAxis.setLabelCount(8, false);
-        rightAxis.setValueFormatter(custom);
-        rightAxis.setSpaceTop(15f);
-        rightAxis.setAxisMinimum(0f); // this replaces setStartAtZero(true)
-
-        Legend l = bar_chart.getLegend();
-        l.setVerticalAlignment(Legend.LegendVerticalAlignment.BOTTOM);
-        l.setHorizontalAlignment(Legend.LegendHorizontalAlignment.LEFT);
-        l.setOrientation(Legend.LegendOrientation.HORIZONTAL);
-        l.setDrawInside(false);
-        l.setForm(Legend.LegendForm.SQUARE);
-        l.setFormSize(9f);
-        l.setTextSize(11f);
-        l.setXEntrySpace(4f);
-
-
+        initBarChart();
         setBarData();
         bar_chart.setOnChartValueSelectedListener(new OnChartValueSelectedListener() {
             @Override
@@ -291,19 +239,19 @@ public class FinancialFragment extends Fragment {
             // yVals1.add(new BarEntry(i, fff[i], getResources().getDrawable(R.drawable.star)));
             yVals1.add(new BarEntry(i+1, fff[i]));
         }
-        BarDataSet set1;
+        BarDataSet barDataSet;
         if (bar_chart.getData() != null &&
                 bar_chart.getData().getDataSetCount() > 0) {
-            set1 = (BarDataSet) bar_chart.getData().getDataSetByIndex(0);
-            set1.setValues(yVals1);
+            barDataSet = (BarDataSet) bar_chart.getData().getDataSetByIndex(0);
+            barDataSet.setValues(yVals1);
             bar_chart.getData().notifyDataChanged();
             bar_chart.notifyDataSetChanged();
         } else {
-            set1 = new BarDataSet(yVals1, "The year 2017");
-            set1.setDrawIcons(false);
-            set1.setColors(ColorTemplate.MATERIAL_COLORS);
+            barDataSet = new BarDataSet(yVals1, "The year 2017");
+            barDataSet.setDrawIcons(false);
+            barDataSet.setColors(ColorTemplate.MATERIAL_COLORS);
             ArrayList<IBarDataSet> dataSets = new ArrayList<IBarDataSet>();
-            dataSets.add(set1);
+            dataSets.add(barDataSet);
 
             BarData data = new BarData(dataSets);
             data.setValueTextSize(10f);
@@ -311,5 +259,59 @@ public class FinancialFragment extends Fragment {
             data.setBarWidth(0.5f);
             bar_chart.setData(data);
         }
+    }
+
+    private void initBarChart() {
+
+        bar_chart.setDrawBarShadow(false);
+        bar_chart.setDrawValueAboveBar(true);
+        bar_chart.getDescription().setEnabled(false);
+        bar_chart.setMaxVisibleValueCount(60);
+        bar_chart.setPinchZoom(false);
+        bar_chart.setDrawGridBackground(false);
+
+        IAxisValueFormatter xAxisFormatter = new DayAxisValueFormatter(bar_chart);
+
+        XAxis xAxis = bar_chart.getXAxis();
+        xAxis.setPosition(XAxis.XAxisPosition.BOTTOM);
+        //  xAxis.setTypeface(mTfLight);
+        xAxis.setDrawGridLines(false);
+        xAxis.setDrawAxisLine(false);
+        xAxis.setGranularity(1f); // only intervals of 1 day
+        xAxis.setLabelCount(7);
+        xAxis.setValueFormatter(xAxisFormatter);
+
+        IAxisValueFormatter custom = new MyAxisValueFormatter();
+
+        YAxis leftAxis = bar_chart.getAxisLeft();
+        // leftAxis.setTypeface(mTfLight);
+        leftAxis.setLabelCount(8, false);
+        leftAxis.setValueFormatter(custom);
+        leftAxis.setDrawGridLines(false);
+        leftAxis.setDrawAxisLine(false);
+        leftAxis.setDrawLabels(false);
+        leftAxis.setPosition(YAxis.YAxisLabelPosition.OUTSIDE_CHART);
+        leftAxis.setSpaceTop(15f);
+        leftAxis.setAxisMinimum(0f); // this replaces setStartAtZero(true)
+
+        YAxis rightAxis = bar_chart.getAxisRight();
+        rightAxis.setDrawGridLines(false);
+        //rightAxis.setTypeface(mTfLight);
+        rightAxis.setLabelCount(8, false);
+        rightAxis.setValueFormatter(custom);
+        rightAxis.setSpaceTop(15f);
+        rightAxis.setDrawAxisLine(false);
+        rightAxis.setDrawLabels(false);
+        rightAxis.setAxisMinimum(0f); // this replaces setStartAtZero(true)
+
+        Legend l = bar_chart.getLegend();
+        l.setVerticalAlignment(Legend.LegendVerticalAlignment.BOTTOM);
+        l.setHorizontalAlignment(Legend.LegendHorizontalAlignment.LEFT);
+        l.setOrientation(Legend.LegendOrientation.HORIZONTAL);
+        l.setDrawInside(false);
+        l.setForm(Legend.LegendForm.SQUARE);
+        l.setFormSize(9f);
+        l.setTextSize(11f);
+        l.setXEntrySpace(4f);
     }
 }

@@ -14,9 +14,7 @@ import com.example.dummy.beans.OfferBeans;
 
 import java.util.ArrayList;
 
-/**
- * Created by C0678642 on 7/3/2017.
- */
+
 
 public class OfferAdapter extends BaseAdapter {
 

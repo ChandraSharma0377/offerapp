@@ -15,9 +15,7 @@ import com.example.dummy.utility.Helper;
 
 import java.util.ArrayList;
 
-/**
- * Created by C0678642 on 7/3/2017.
- */
+
 
 public class IncomeAdapter extends BaseAdapter {
 

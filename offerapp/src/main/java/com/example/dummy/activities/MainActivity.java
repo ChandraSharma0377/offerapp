@@ -1,6 +1,8 @@
 package com.example.dummy.activities;
 
+import android.content.BroadcastReceiver;
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Handler;
@@ -28,6 +30,7 @@ import com.example.dummy.R;
 import com.example.dummy.database.DBOpenHelperClass;
 import com.example.dummy.fragments.HomeFragment;
 import com.example.dummy.fragments.LoginFragment;
+import com.example.dummy.utility.Commons;
 import com.example.dummy.utility.Helper;
 import com.example.dummy.utility.NetworkHelper;
 
@@ -50,7 +53,7 @@ public class MainActivity extends AppCompatActivity
     private HashMap<String, Stack<Fragment>> mFragmentsStack;
     private TextView actionBarTitle;
     private ImageButton btn_logout;
-    private  FloatingActionButton fab;
+    private FloatingActionButton fab;
 
 
     private final String IS_LOGIN = "IsLoggedIn";
@@ -63,6 +66,8 @@ public class MainActivity extends AppCompatActivity
     private ActionBarDrawerToggle toggle;
     private NavigationView navigationView;
     private ActionBar ab;
+    private BroadcastReceiver broadcastReceiver;
+
     public static MainActivity getMainScreenActivity() {
         return mainActivity;
     }
@@ -70,6 +75,7 @@ public class MainActivity extends AppCompatActivity
     public static NetworkHelper getNetworkHelper() {
         return networkHelper;
     }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -77,9 +83,9 @@ public class MainActivity extends AppCompatActivity
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         actionBarTitle = toolbar.findViewById(R.id.toolbar_title);
-      //  btn_logout = toolbar.findViewById(R.id.btn_logout);
+        //  btn_logout = toolbar.findViewById(R.id.btn_logout);
         // Get the ActionBar here to configure the way it behaves.
-     //   ab = getSupportActionBar();
+        //   ab = getSupportActionBar();
         //ab.setHomeAsUpIndicator(R.drawable.ic_menu); // set a custom icon for the default home button
 //        ab.setDisplayShowHomeEnabled(true); // show or hide the default home button
 //        ab.setDisplayHomeAsUpEnabled(true);
@@ -111,10 +117,52 @@ public class MainActivity extends AppCompatActivity
         setUserProfile();
         setDrawerEnabled(isLoggedIn());
         setLogoutEnabled(isLoggedIn());
-        if(isLoggedIn()){
+        if (isLoggedIn()) {
             changeNavigationContentFragment(new HomeFragment(), false);
-        }else {
+        } else {
             changeNavigationContentFragment(new LoginFragment(), false);
+        }
+
+        broadcastReceiver = new BroadcastReceiver() {
+            @Override
+            public void onReceive(Context context, Intent intent) {
+
+                if (intent.getAction().equals(Commons.PUSH_NOTIFICATION)) {
+                    // new push notification is received
+                    updateListByNotification(intent);
+                }
+            }
+        };
+    }
+
+    public void updateListByNotification(Intent intent) {
+        Bundle extras = intent.getExtras();
+        if (extras != null) {
+//            String message = intent.getStringExtra(Constants.MESSAGE);
+//            String qrcode = intent.getStringExtra(Constants.QRCODE);
+//            String status = intent.getStringExtra(Constants.STATUS);
+//            String current_serving = intent.getStringExtra(Constants.CURRENT_SERVING);
+//            String lastno = intent.getStringExtra(Constants.LASTNO);
+//            String payload = intent.getStringExtra(Constants.MSG_TYPE_F);
+//            Log.v("Notify msg background",
+//                    "Push notification: " + message + "\n" + "qrcode : " + qrcode
+//                            + "\n" + "status : " + status
+//                            + "\n" + "current_serving : " + current_serving
+//                            + "\n" + "lastno : " + lastno
+//                            + "\n" + "payload : " + payload
+//            );
+
+
+        }
+    }
+
+
+    @Override
+    public void onNewIntent(Intent intent) {
+        Bundle extras = intent.getExtras();
+        if (extras != null) {
+            updateListByNotification(intent);
+
         }
     }
 
@@ -123,11 +171,12 @@ public class MainActivity extends AppCompatActivity
         if (drawer.isDrawerOpen(GravityCompat.START)) {
             drawer.closeDrawer(GravityCompat.START);
         } else {
-           // super.onBackPressed();
+            // super.onBackPressed();
             removeFragment();
         }
 
     }
+
     public void removeFragment() {
         int statckSize = mFragmentsStack.get(CONTENT_TAG).size();
         if (statckSize == 0) {
@@ -186,7 +235,7 @@ public class MainActivity extends AppCompatActivity
 
         } else if (id == R.id.nav_share) {
             Helper.shareApp(this);
-        } else if(id == R.id.nav_rate_app){
+        } else if (id == R.id.nav_rate_app) {
             Helper.rateApp(this);
         }
 
@@ -245,7 +294,7 @@ public class MainActivity extends AppCompatActivity
         editor.commit();
     }
 
-    public void setUserProfile(){
+    public void setUserProfile() {
         View header = navigationView.getHeaderView(0);
         TextView tv_username = (TextView) header.findViewById(R.id.tv_username);
         TextView tv_email = (TextView) header.findViewById(R.id.tv_email);
@@ -258,27 +307,27 @@ public class MainActivity extends AppCompatActivity
                 DrawerLayout.LOCK_MODE_LOCKED_CLOSED;
         drawer.setDrawerLockMode(lockMode);
         toggle.setDrawerIndicatorEnabled(enabled);
-       // ab.setDisplayShowHomeEnabled(enabled);
-       // ab.setDisplayHomeAsUpEnabled(enabled);
+        // ab.setDisplayShowHomeEnabled(enabled);
+        // ab.setDisplayHomeAsUpEnabled(enabled);
     }
 
-    public void setActionBarTitle(String title){
+    public void setActionBarTitle(String title) {
         //actionBarTitle.setText(title);
         getSupportActionBar().setTitle(title);
     }
 
-    public String getUniqueId(){
-        TelephonyManager telephonyManager = (TelephonyManager)getSystemService(Context.TELEPHONY_SERVICE);
+    public String getUniqueId() {
+        TelephonyManager telephonyManager = (TelephonyManager) getSystemService(Context.TELEPHONY_SERVICE);
         String deviceid = telephonyManager.getDeviceId();
-        return  deviceid;
+        return deviceid;
     }
+
     public void setLogoutEnabled(boolean enabled) {
-        if(enabled) {
-           // btn_logout.setVisibility(View.VISIBLE);
+        if (enabled) {
+            // btn_logout.setVisibility(View.VISIBLE);
             fab.setVisibility(View.VISIBLE);
-        }
-        else {
-           // btn_logout.setVisibility(View.INVISIBLE);
+        } else {
+            // btn_logout.setVisibility(View.INVISIBLE);
             fab.setVisibility(View.INVISIBLE);
         }
     }

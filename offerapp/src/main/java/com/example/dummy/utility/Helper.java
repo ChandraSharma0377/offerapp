@@ -3,12 +3,10 @@ package com.example.dummy.utility;
 import android.content.ActivityNotFoundException;
 import android.content.Context;
 import android.content.Intent;
-import android.icu.text.NumberFormat;
 import android.net.Uri;
 
-/**
- * Created by C0678642 on 6/30/2017.
- */
+import java.text.DecimalFormat;
+
 
 public class Helper {
 
@@ -48,7 +46,9 @@ public class Helper {
 
     public static String formatRupee(String amount) {
         try {
-            return NumberFormat.getInstance().format(Integer.parseInt(amount));
+            DecimalFormat formatter = new DecimalFormat("#,###,###");
+            return  formatter.format(Integer.parseInt(amount));
+           // return NumberFormat.getInstance().format(Integer.parseInt(amount));
         } catch (Exception e) {
             e.printStackTrace();
             return amount;
