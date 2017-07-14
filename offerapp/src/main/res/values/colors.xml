@@ -6,4 +6,5 @@
     <color name="white">#ffffff</color>
     <color name="grey">@android:color/darker_gray</color>
     <color name="header_color">@android:color/black</color>
+    <color name="default_page_bg">#cccccc</color>
 </resources>

@@ -66,7 +66,7 @@ public class SpendAndIncomeFragment extends Fragment implements View.OnClickList
         tv_next.setOnClickListener(this);
         isSpendScreen = getArguments().getBoolean(Commons.KEY_IS_SPEND_SCREEN,false);
         if(isSpendScreen) {
-            tv_list_title.setText("All Categories(Sep 2017)");
+            tv_list_title.setText("All Categories (Sep 2017)");
             tv_pre.setText("Aug");
             tv_next.setText("Oct");
         }else{

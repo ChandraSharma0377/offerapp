@@ -2,6 +2,7 @@ package com.example.dummy.fragments;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.view.ViewPager;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
@@ -11,14 +12,18 @@ import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.dummy.R;
 import com.example.dummy.activities.MainActivity;
 import com.example.dummy.adapters.OfferAdapter;
+import com.example.dummy.adapters.OfferViewPagerAdapter;
 import com.example.dummy.adapters.ReminderAdapter;
+import com.example.dummy.adapters.ReminderViewPagerAdapter;
 import com.example.dummy.asynctasks.AsyncProcess;
 import com.example.dummy.beans.OfferBeans;
 import com.example.dummy.beans.ReminderBeans;
+import com.example.dummy.pageindicator.CirclePageIndicator;
 import com.example.dummy.utility.Commons;
 
 import java.util.ArrayList;
@@ -33,6 +38,8 @@ public class HomeFragment extends Fragment implements View.OnClickListener{
     private ArrayList<OfferBeans> offerBeanses = new ArrayList<>();
     private ArrayList<ReminderBeans> reminderBeanses = new ArrayList<>();
     private TextView tv_show_all_reminder,tv_show_all_offer;
+    private ViewPager viewpager_reminder,viewpager_offer;
+    private CirclePageIndicator indicator_reminder,indicator_offer;
     public HomeFragment() {
         super();
 
@@ -50,6 +57,10 @@ public class HomeFragment extends Fragment implements View.OnClickListener{
         lv_reminder = (ListView) view.findViewById(R.id.lv_reminder);
         tv_show_all_reminder = (TextView) view.findViewById(R.id.tv_show_all_reminder);
         tv_show_all_offer = (TextView) view.findViewById(R.id.tv_show_all_offer);
+        viewpager_reminder = (ViewPager) view.findViewById(R.id.viewpager_reminder);
+        viewpager_offer = (ViewPager) view.findViewById(R.id.viewpager_offer);
+        indicator_offer = (CirclePageIndicator) view.findViewById(R.id.indicator_offer);
+        indicator_reminder = (CirclePageIndicator) view.findViewById(R.id.indicator_reminder);
         tv_show_all_reminder.setOnClickListener(this);
         tv_show_all_offer.setOnClickListener(this);
         initOfferData();
@@ -62,6 +73,10 @@ public class HomeFragment extends Fragment implements View.OnClickListener{
                 MainActivity.getMainScreenActivity().changeNavigationContentFragment(new ReminderFragment(),true);
             }
         });
+        ReminderViewPagerAdapter adapter = new ReminderViewPagerAdapter(getActivity(), reminderBeanses);
+        viewpager_reminder.setAdapter(adapter);
+        indicator_reminder.setViewPager(viewpager_reminder);
+
         lv_reminder.setOnTouchListener(new View.OnTouchListener() {
 
             public boolean onTouch(View v, MotionEvent event) {
@@ -76,6 +91,10 @@ public class HomeFragment extends Fragment implements View.OnClickListener{
         });
         OfferAdapter offferAdapter = new OfferAdapter(getActivity(), offerBeanses);
         lv_offer.setAdapter(offferAdapter);
+
+        OfferViewPagerAdapter offerViewPagerAdapter = new OfferViewPagerAdapter(getActivity(), offerBeanses);
+        viewpager_offer.setAdapter(offerViewPagerAdapter);
+        indicator_offer.setViewPager(viewpager_offer);
         lv_offer.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
@@ -85,6 +104,11 @@ public class HomeFragment extends Fragment implements View.OnClickListener{
         rl_financial.setOnClickListener(this);
         rl_current_income.setOnClickListener(this);
         rl_current_spend.setOnClickListener(this);
+        if(MainActivity.getMainScreenActivity().isReadWriteSMSPermissionAllowed()){
+            Toast.makeText(getActivity(),"permision allowed",Toast.LENGTH_LONG).show();
+        }else{
+           MainActivity.getMainScreenActivity().requestReadWriteSMSPermission();
+        }
 
         return view;
     }

@@ -40,7 +40,6 @@ public class NoQueueMessagingService extends FirebaseMessagingService {
 
         // Not getting messages here? See why this may be: https://goo.gl/39bRNJ
         Log.d(TAG, "From: " + remoteMessage.getFrom());
-        Log.d(TAG, "Notification Message Body: " + remoteMessage.getNotification().getBody());
 
 
         // Check if message contains a notification payload.

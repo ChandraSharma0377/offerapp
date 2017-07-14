@@ -36,7 +36,8 @@
     <string name="date_of_spend">Date of Spend</string>
     <string name="category">Category</string>
     <string name="paid">Paid</string>
-
+    <string name="top_offeer">Top Offers</string>
+    <string name="offers_category">Offers Category</string>
 
     <!-- Strings related to screen -->
     <string name="screen_login">Login</string>

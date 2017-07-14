@@ -4,7 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:layout_weight="1"
-    android:background="@android:color/white"
+    android:background="@color/default_page_bg"
     android:orientation="vertical"
     android:padding="@dimen/general_padding">
 

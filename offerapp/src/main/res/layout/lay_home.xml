@@ -3,7 +3,7 @@
     xmlns:card_view="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@android:color/white"
+    android:background="@color/default_page_bg"
     android:orientation="vertical"
     android:padding="10dp">
 
@@ -50,7 +50,6 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="10dp"
         android:orientation="horizontal"
         android:weightSum="1">
 
@@ -68,8 +67,8 @@
             <RelativeLayout
                 android:id="@+id/rl_current_spend"
                 android:layout_width="match_parent"
-                android:background="@android:color/white"
                 android:layout_height="wrap_content"
+                android:background="@android:color/white"
                 android:gravity="center"
                 android:paddingBottom="20dp"
                 android:paddingTop="20dp">
@@ -113,9 +112,9 @@
                 android:id="@+id/rl_current_income"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:background="@android:color/white"
                 android:gravity="center"
                 android:paddingBottom="20dp"
-                android:background="@android:color/white"
                 android:paddingTop="20dp">
 
                 <TextView
@@ -141,55 +140,159 @@
         </android.support.v7.widget.CardView>
     </LinearLayout>
 
-    <RelativeLayout
+    <android.support.v7.widget.CardView
+        android:id="@+id/card_view_reminder"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="10dp">
+        android:layout_gravity="center"
+        card_view:cardCornerRadius="4dp"
+        card_view:cardPreventCornerOverlap="false"
+        card_view:cardUseCompatPadding="true">
 
-        <TextView
-            android:layout_width="wrap_content"
+        <LinearLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_alignParentLeft="true"
-            android:text="@string/bill_reminder"
-            android:textSize="@dimen/general_txt_size" />
+            android:orientation="vertical">
 
-        <TextView
-            android:id="@+id/tv_show_all_reminder"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentRight="true"
-            android:text="@string/show_all"
-            android:textSize="@dimen/general_txt_size" />
-    </RelativeLayout>
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingLeft="5dp"
+                android:paddingRight="5dp">
 
-    <ListView
-        android:id="@+id/lv_reminder"
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentLeft="true"
+                    android:gravity="center_vertical"
+                    android:paddingBottom="5dp"
+                    android:paddingTop="5dp"
+                    android:text="@string/bill_reminder"
+                    android:textColor="@color/header_color"
+                    android:textSize="@dimen/header_txt_size"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/tv_show_all_reminder"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentRight="true"
+                    android:gravity="center_vertical"
+                    android:paddingBottom="5dp"
+                    android:paddingTop="5dp"
+                    android:text="@string/show_all"
+                    android:textColor="@color/header_color"
+                    android:textSize="@dimen/header_txt_size"
+                    android:textStyle="bold" />
+            </RelativeLayout>
+
+            <View style="@style/header_seprator" />
+
+            <ListView
+                android:id="@+id/lv_reminder"
+                android:layout_width="match_parent"
+                android:layout_height="130dp"
+                android:visibility="gone" />
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="130dp">
+
+                <android.support.v4.view.ViewPager
+                    android:id="@+id/viewpager_reminder"
+                    android:layout_width="match_parent"
+                    android:layout_height="130dp" />
+
+                <com.example.dummy.pageindicator.CirclePageIndicator
+                    android:id="@+id/indicator_reminder"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentBottom="true"
+                    android:layout_centerInParent="true"
+                    android:layout_gravity="center"
+                    android:layout_marginBottom="2dp"
+                    android:padding="10dip"
+                    card_view:fillColor="#0064A8"
+                    card_view:pageColor="@android:color/white"
+                    card_view:strokeColor="#0064A8" />
+            </RelativeLayout>
+        </LinearLayout>
+    </android.support.v7.widget.CardView>
+
+    <android.support.v7.widget.CardView
+        android:id="@+id/card_view_offer"
         android:layout_width="match_parent"
-        android:layout_height="130dp" />
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        card_view:cardCornerRadius="4dp"
+        card_view:cardPreventCornerOverlap="false"
+        card_view:cardUseCompatPadding="true">
 
-    <RelativeLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content">
-
-        <TextView
-            android:layout_width="wrap_content"
+        <LinearLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_alignParentLeft="true"
-            android:text="@string/offer"
-            android:textSize="@dimen/general_txt_size" />
+            android:orientation="vertical">
 
-        <TextView
-            android:id="@+id/tv_show_all_offer"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentRight="true"
-            android:text="@string/show_all"
-            android:textSize="@dimen/general_txt_size" />
-    </RelativeLayout>
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingLeft="5dp"
+                android:paddingRight="5dp">
 
-    <ListView
-        android:id="@+id/lv_offer"
-        android:layout_width="match_parent"
-        android:layout_height="120dp" />
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentLeft="true"
+                    android:paddingBottom="5dp"
+                    android:paddingTop="5dp"
+                    android:text="@string/offer"
+                    android:textColor="@color/header_color"
+                    android:textSize="@dimen/header_txt_size"
+                    android:textStyle="bold" />
 
+                <TextView
+                    android:id="@+id/tv_show_all_offer"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentRight="true"
+                    android:paddingBottom="5dp"
+                    android:paddingTop="5dp"
+                    android:text="@string/show_all"
+                    android:textColor="@color/header_color"
+                    android:textSize="@dimen/header_txt_size"
+                    android:textStyle="bold" />
+            </RelativeLayout>
+
+            <View style="@style/header_seprator" />
+
+            <ListView
+                android:id="@+id/lv_offer"
+                android:layout_width="match_parent"
+                android:layout_height="120dp"
+                android:visibility="gone" />
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="130dp">
+
+                <android.support.v4.view.ViewPager
+                    android:id="@+id/viewpager_offer"
+                    android:layout_width="match_parent"
+                    android:layout_height="130dp" />
+
+                <com.example.dummy.pageindicator.CirclePageIndicator
+                    android:id="@+id/indicator_offer"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentBottom="true"
+                    android:layout_centerInParent="true"
+                    android:layout_gravity="center"
+                    android:layout_marginBottom="2dp"
+                    android:padding="10dip"
+                    card_view:fillColor="#0064A8"
+                    card_view:pageColor="@android:color/white"
+                    card_view:strokeColor="#0064A8" />
+            </RelativeLayout>
+        </LinearLayout>
+    </android.support.v7.widget.CardView>
 </LinearLayout>

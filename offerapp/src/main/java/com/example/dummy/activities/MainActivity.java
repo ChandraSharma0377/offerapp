@@ -1,17 +1,21 @@
 package com.example.dummy.activities;
 
+import android.Manifest;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
 import android.support.design.widget.Snackbar;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBar;
@@ -54,7 +58,7 @@ public class MainActivity extends AppCompatActivity
     private TextView actionBarTitle;
     private ImageButton btn_logout;
     private FloatingActionButton fab;
-
+    private final int SMS_PERMISSION_CODE = 100;
 
     private final String IS_LOGIN = "IsLoggedIn";
     private final String KEY_MOBILE = "mobileNo";
@@ -237,6 +241,10 @@ public class MainActivity extends AppCompatActivity
             Helper.shareApp(this);
         } else if (id == R.id.nav_rate_app) {
             Helper.rateApp(this);
+        }else if (id == R.id.nav_contact) {
+
+        } else if (id == R.id.nav_about) {
+
         }
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
@@ -331,4 +339,32 @@ public class MainActivity extends AppCompatActivity
             fab.setVisibility(View.INVISIBLE);
         }
     }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        Fragment fragment = getSupportFragmentManager().findFragmentById(R.id.main_fragment);
+        fragment.onActivityResult(requestCode, resultCode, data);
+    }
+    public boolean isReadWriteSMSPermissionAllowed() {
+        //Getting the permission status
+        int result_read = ContextCompat.checkSelfPermission(this, Manifest.permission.READ_SMS);
+        int result_write = ContextCompat.checkSelfPermission(this, Manifest.permission.SEND_SMS);
+        //If permission is granted returning true
+        if (result_read == PackageManager.PERMISSION_GRANTED &&result_write == PackageManager.PERMISSION_GRANTED )
+            return true;
+        //If permission is not granted returning false
+        return false;
+    }
+
+
+    public void requestReadWriteSMSPermission() {
+        if (ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.READ_SMS)||
+                ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.SEND_SMS)) {
+            //Provide an additional info to the user if the permission was not granted
+        }
+        //External storage has not been granted yet. Request it directly.
+        ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.READ_SMS,Manifest.permission.SEND_SMS}, SMS_PERMISSION_CODE);
+
+    }
+
 }
