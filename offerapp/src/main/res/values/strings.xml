@@ -53,4 +53,5 @@
     <string name="screen_all_offers">All Offers</string>
     <string name="all_offers">All Offers</string>
     <string name="screen_individual_category_offer">Individual Category Offers</string>
+    <string name="filter_by">Filter By</string>
 </resources>

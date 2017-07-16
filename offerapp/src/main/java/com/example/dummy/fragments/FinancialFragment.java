@@ -8,9 +8,11 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
+import android.widget.ArrayAdapter;
 import android.widget.ExpandableListView;
 import android.widget.ExpandableListView.OnChildClickListener;
 import android.widget.ExpandableListView.OnGroupClickListener;
+import android.widget.Spinner;
 import android.widget.Toast;
 
 import com.example.dummy.R;
@@ -46,6 +48,8 @@ public class FinancialFragment extends Fragment {
     private List<String> listDataHeader;
     private BarChart bar_chart;
     private HashMap<String, ArrayList<IncomeBeans>> listDataChild;
+    private String[] filter_data = { "Week", "Month", "Quarterly", "Year"  };
+    private Spinner sp_filter;
     public FinancialFragment() {
         super();
 
@@ -87,7 +91,12 @@ public class FinancialFragment extends Fragment {
                 return false;
             }
         });
-
+        Spinner sp_filter = (Spinner) view.findViewById(R.id.sp_filter);
+        //Creating the ArrayAdapter instance having the country list
+        ArrayAdapter aa = new ArrayAdapter(getActivity(),android.R.layout.simple_spinner_item, filter_data);
+        aa.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        //Setting the ArrayAdapter data on the Spinner
+        sp_filter.setAdapter(aa);
 
         bar_chart = (BarChart)view.findViewById(R.id.bar_chart);
         initBarChart();

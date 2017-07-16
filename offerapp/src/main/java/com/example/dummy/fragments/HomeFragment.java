@@ -25,6 +25,7 @@ import com.example.dummy.beans.OfferBeans;
 import com.example.dummy.beans.ReminderBeans;
 import com.example.dummy.pageindicator.CirclePageIndicator;
 import com.example.dummy.utility.Commons;
+import com.example.dummy.views.ClickableViewPager;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -38,7 +39,7 @@ public class HomeFragment extends Fragment implements View.OnClickListener{
     private ArrayList<OfferBeans> offerBeanses = new ArrayList<>();
     private ArrayList<ReminderBeans> reminderBeanses = new ArrayList<>();
     private TextView tv_show_all_reminder,tv_show_all_offer;
-    private ViewPager viewpager_reminder,viewpager_offer;
+    private ClickableViewPager viewpager_reminder,viewpager_offer;
     private CirclePageIndicator indicator_reminder,indicator_offer;
     public HomeFragment() {
         super();
@@ -57,8 +58,8 @@ public class HomeFragment extends Fragment implements View.OnClickListener{
         lv_reminder = (ListView) view.findViewById(R.id.lv_reminder);
         tv_show_all_reminder = (TextView) view.findViewById(R.id.tv_show_all_reminder);
         tv_show_all_offer = (TextView) view.findViewById(R.id.tv_show_all_offer);
-        viewpager_reminder = (ViewPager) view.findViewById(R.id.viewpager_reminder);
-        viewpager_offer = (ViewPager) view.findViewById(R.id.viewpager_offer);
+        viewpager_reminder = (ClickableViewPager) view.findViewById(R.id.viewpager_reminder);
+        viewpager_offer = (ClickableViewPager) view.findViewById(R.id.viewpager_offer);
         indicator_offer = (CirclePageIndicator) view.findViewById(R.id.indicator_offer);
         indicator_reminder = (CirclePageIndicator) view.findViewById(R.id.indicator_reminder);
         tv_show_all_reminder.setOnClickListener(this);
@@ -70,6 +71,13 @@ public class HomeFragment extends Fragment implements View.OnClickListener{
         lv_reminder.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                MainActivity.getMainScreenActivity().changeNavigationContentFragment(new ReminderFragment(),true);
+            }
+        });
+
+        viewpager_reminder.setOnItemClickListener(new ClickableViewPager.OnItemClickListener() {
+            @Override
+            public void onItemClick(int position) {
                 MainActivity.getMainScreenActivity().changeNavigationContentFragment(new ReminderFragment(),true);
             }
         });
@@ -95,6 +103,12 @@ public class HomeFragment extends Fragment implements View.OnClickListener{
         OfferViewPagerAdapter offerViewPagerAdapter = new OfferViewPagerAdapter(getActivity(), offerBeanses);
         viewpager_offer.setAdapter(offerViewPagerAdapter);
         indicator_offer.setViewPager(viewpager_offer);
+        viewpager_offer.setOnItemClickListener(new ClickableViewPager.OnItemClickListener() {
+            @Override
+            public void onItemClick(int position) {
+                MainActivity.getMainScreenActivity().changeNavigationContentFragment(new AllOffersFragment(),true);
+            }
+        });
         lv_offer.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {

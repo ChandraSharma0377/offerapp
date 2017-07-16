@@ -2,7 +2,9 @@ package com.example.dummy.adapters;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Typeface;
+import android.net.Uri;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -18,6 +20,8 @@ import com.example.dummy.utility.Helper;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+
+import static android.R.attr.x;
 
 public class ExpandableListAdapter extends BaseExpandableListAdapter {
 
@@ -52,12 +56,13 @@ public class ExpandableListAdapter extends BaseExpandableListAdapter {
 		final ViewHolder holder;
 		if (convertView == null) {
 			LayoutInflater inflater = ((Activity) context).getLayoutInflater();
-			convertView = inflater.inflate(R.layout.list_item_income, null);
+			convertView = inflater.inflate(R.layout.list_item_financial, null);
 			holder = new ViewHolder();
 			holder.tvheader = (TextView) convertView.findViewById(R.id.tvheader);
 			holder.tvsubheader = (TextView) convertView.findViewById(R.id.tvsubheader);
 			holder.tvamount = (TextView) convertView.findViewById(R.id.tvamount);
 			holder.ivthumb = (ImageView) convertView.findViewById(R.id.ivthumb);
+			holder.iv_send_sms = (ImageView) convertView.findViewById(R.id.iv_send_sms);
 			convertView.setTag(holder);
 		} else {
 			holder = (ViewHolder) convertView.getTag();
@@ -66,6 +71,19 @@ public class ExpandableListAdapter extends BaseExpandableListAdapter {
 		holder.tvsubheader.setText(incomeBeans.getSubtitle());
 		holder.tvamount.setText(context.getString(R.string.Rs)+" "+ Helper.formatRupee(incomeBeans.getAmount()));
 		holder.ivthumb.setImageDrawable(incomeBeans.getThumb());
+		holder.iv_send_sms.setOnClickListener(new View.OnClickListener() {
+			@Override
+			public void onClick(View view) {
+				try {
+					Intent sendIntent = new Intent(Intent.ACTION_VIEW);
+					sendIntent.setData(Uri.parse("sms:"+ "9900990000"));
+					sendIntent.putExtra("sms_body", "Hi Kotak, I want to knoe my current balance.");
+					context.startActivity(sendIntent);
+				}catch (Exception e){
+					e.printStackTrace();
+				}
+			}
+		});
 		return convertView;
 	}
 
@@ -126,5 +144,6 @@ public class ExpandableListAdapter extends BaseExpandableListAdapter {
 		TextView tvsubheader;
 		TextView tvamount;
 		ImageView ivthumb;
+		ImageView iv_send_sms;
 	}
 }
