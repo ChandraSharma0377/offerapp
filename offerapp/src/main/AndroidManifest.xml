@@ -11,8 +11,9 @@
     <uses-permission android:name="android.permission.READ_SMS" />
 
     <application
-        android:name=".activities.MyApplication"
-        android:allowBackup="true"
+        android:name="com.in.monetapp.activities.MyApplication"
+        android:allowBackup="false"
+        android:debuggable="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
@@ -27,7 +28,7 @@
             android:name="com.google.firebase.messaging.default_notification_color"
             android:resource="@color/colorAccent" />
         <activity
-            android:name=".activities.SplashScreen"
+            android:name="com.in.monetapp.activities.SplashScreen"
             android:label="@string/app_name"
             android:theme="@style/AppTheme.NoActionBar">
             <intent-filter>
@@ -37,18 +38,18 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".activities.MainActivity"
+            android:name="com.in.monetapp.activities.MainActivity"
             android:label="@string/app_name"
             android:theme="@style/AppTheme.NoActionBar" />
 
-        <service android:name=".services.NoQueueFirebaseInstanceServices">
+        <service android:name="com.in.monetapp.services.NoQueueFirebaseInstanceServices">
             <intent-filter>
                 <action android:name="com.google.firebase.INSTANCE_ID_EVENT" />
             </intent-filter>
         </service>
 
         <service
-            android:name=".services.NoQueueMessagingService">
+            android:name="com.in.monetapp.services.NoQueueMessagingService">
             <intent-filter>
                 <action android:name="com.google.firebase.MESSAGING_EVENT"/>
             </intent-filter>

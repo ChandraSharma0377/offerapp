@@ -198,12 +198,12 @@
                 android:layout_width="match_parent"
                 android:layout_height="130dp">
 
-                <com.example.dummy.views.ClickableViewPager
+                <com.in.monetapp.views.ClickableViewPager
                     android:id="@+id/viewpager_reminder"
                     android:layout_width="match_parent"
                     android:layout_height="130dp" />
 
-                <com.example.dummy.pageindicator.CirclePageIndicator
+                <com.in.monetapp.pageindicator.CirclePageIndicator
                     android:id="@+id/indicator_reminder"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -275,12 +275,12 @@
                 android:layout_width="match_parent"
                 android:layout_height="130dp">
 
-                <com.example.dummy.views.ClickableViewPager
+                <com.in.monetapp.views.ClickableViewPager
                     android:id="@+id/viewpager_offer"
                     android:layout_width="match_parent"
                     android:layout_height="130dp" />
 
-                <com.example.dummy.pageindicator.CirclePageIndicator
+                <com.in.monetapp.pageindicator.CirclePageIndicator
                     android:id="@+id/indicator_offer"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
