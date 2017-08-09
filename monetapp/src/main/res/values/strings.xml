@@ -1,0 +1,57 @@
+<resources>
+    <string name="app_name">Monet</string>
+
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+
+    <string name="action_settings">Settings</string>
+    <string name="title_activity_login">Sign in</string>
+
+    <!-- Strings related to login -->
+    <string name="prompt_email">Email</string>
+    <string name="prompt_password">Password (optional)</string>
+    <string name="action_sign_in">Sign in or register</string>
+    <string name="action_sign_in_short">Sign in</string>
+    <string name="error_invalid_email">This email address is invalid</string>
+    <string name="error_invalid_password">This password is too short</string>
+    <string name="error_incorrect_password">This password is incorrect</string>
+    <string name="error_field_required">This field is required</string>
+    <string name="offline">Network unavailable. Please connect your device to network.</string>
+    <string name="Rs">\u20B9</string>
+
+
+
+    <string name="financial_summary">Financial Summary</string>
+    <string name="current_spend">Current Month Spend</string>
+    <string name="current_income">Current Month Income</string>
+    <string name="bill_reminder">Bill Reminder</string>
+    <string name="show_all">Show All</string>
+    <string name="offer">Offers</string>
+    <string name="spend">Spend</string>
+    <string name="merchant">Merchant</string>
+    <string name="source_of_transaction">Source of Transaction</string>
+    <string name="original_msg">Original Message</string>
+    <string name="all_transactions">All Transactions</string>
+    <string name="screen_spend_individual">Spends Individual Category</string>
+    <string name="date_of_spend">Date of Spend</string>
+    <string name="category">Category</string>
+    <string name="paid">Paid</string>
+    <string name="top_offeer">Top Offers</string>
+    <string name="offers_category">Offers Category</string>
+
+    <!-- Strings related to screen -->
+    <string name="screen_login">Login</string>
+    <string name="screen_home">Home</string>
+    <string name="screen_income">Income</string>
+    <string name="screen_spend">Spends</string>
+    <string name="screen_financial_summary">Financial Summary</string>
+    <string name="screen_individual_offer">Individual Offer</string>
+    <string name="screen_income_details">Income Details</string>
+    <string name="screen_individual_transaction">Individual Transaction</string>
+    <string name="screen_reminder">All Reminders</string>
+    <string name="screen_spend_individual_month">Spend Individual Month</string>
+    <string name="screen_all_offers">All Offers</string>
+    <string name="all_offers">All Offers</string>
+    <string name="screen_individual_category_offer">Individual Category Offers</string>
+    <string name="filter_by">Filter By</string>
+</resources>
