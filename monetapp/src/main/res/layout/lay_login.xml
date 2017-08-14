@@ -19,7 +19,7 @@
             android:layout_marginLeft="10dp"
             android:layout_marginRight="10dp"
             android:background="@drawable/edt_white_round_rect"
-            android:hint="Please enter emil id "
+            android:hint="Please enter email id "
             android:inputType="textEmailAddress"
             android:maxLines="1"
             android:paddingBottom="2dp"

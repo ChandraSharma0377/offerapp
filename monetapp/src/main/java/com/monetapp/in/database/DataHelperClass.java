@@ -4,6 +4,7 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.support.v4.content.ContextCompat;
 import android.util.Log;
 
 import com.example.dummy.R;
@@ -16,6 +17,7 @@ import com.monetapp.in.beans.SpendIndividualMonthBeans;
 import com.monetapp.in.utility.Commons;
 
 import java.io.UnsupportedEncodingException;
+import java.net.URLDecoder;
 import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.List;
@@ -43,7 +45,12 @@ public class DataHelperClass {
     private static final String TABLE_ACCOUNT_TYPE = "account_Type";
     private static final String TABLE_INDUSTRY = "industry";
 
+    private static final String TABLE_RESPONSE= "response";
+
     // Column
+    private static final String COLUMN_RESPONSE_ID = "response_id";
+    private static final String COLUMN_RESPONSE = "response_value";
+
     private static final String COLUMN_CATEGORY_DETAIL = "category_detail";
     private static final String COLUMN_CATEGORY_ICON = "category_icon";
 
@@ -118,6 +125,10 @@ public class DataHelperClass {
     private static  final String COLUMN_ACCOUNT_TYPE = "account_type";
     private static  final String COLUMN_INDUSTRY_DETAIL = "industry_detail";
 
+    private static  final String CREATE_TABLE_RESPONSE = "CREATE TABLE " + TABLE_RESPONSE+ " ( "
+            + COLUMN_RESPONSE_ID + PRIMARY_KEY
+            + COLUMN_RESPONSE + TEXT_TYPE + " );";
+
     private static  final String CREATE_TABLE_INDUSTRY = "CREATE TABLE " + TABLE_INDUSTRY + " ( "
             + COLUMN_INDUSTRY_ID + PRIMARY_KEY
             + COLUMN_INDUSTRY_DETAIL + TEXT_TYPE + " );";
@@ -151,7 +162,7 @@ public class DataHelperClass {
     private static final String CREATE_TABLE_ACCOUNTS = "CREATE TABLE " + TABLE_ACCOUNTS + " ( "
             + COLUMN_ACCOUNT_ID + PRIMARY_KEY
             + COLUMN_CUSTOMER_ID + INT_TYPE + COMMA_SEP
-            + COLUMN_ACCOUNT_TYPE + INT_TYPE + COMMA_SEP
+            + COLUMN_ACCOUNT_TYPE + TEXT_TYPE + COMMA_SEP
             + COLUMN_ACCOUNT_NUMBER + TEXT_TYPE + COMMA_SEP
             + COLUMN_ACCOUNT_PROVIDER + TEXT_TYPE + COMMA_SEP
             + COLUMN_ACCOUNT_BALANCE + DOUBLE_TYPE + COMMA_SEP
@@ -251,6 +262,7 @@ public class DataHelperClass {
             db.execSQL(CREATE_TABLE_CATEGORY);
             db.execSQL(CREATE_TABLE_ACCOUNT_TYPE);
             db.execSQL(CREATE_TABLE_INDUSTRY);
+            db.execSQL(CREATE_TABLE_RESPONSE);
         } catch (Exception ex) {
             Log.d("DBException", ex.getMessage());
         }
@@ -268,7 +280,7 @@ public class DataHelperClass {
                 values.put(COLUMN_MESSAGE_ID, Integer.parseInt(smsBeans.getId()));
                 values.put(COLUMN_CUSTOMER_ID, MyApplication.getMd5Mobile());
                 values.put(COLUMN_MESSAGE_SENDER, smsBeans.getAddress());
-                values.put(COLUMN_MESSAGE_DATE, smsBeans.getTime());
+                values.put(COLUMN_MESSAGE_DATE, Commons.getFormattedDate(smsBeans.getTime()));
                 values.put(COLUMN_MESSAGE_CONTENT, smsBeans.getMsg());
                 values.put(COLUMN_IS_PROCESSED, 0);
                 values.put(COLUMN_IS_DELETED, 0);
@@ -276,6 +288,7 @@ public class DataHelperClass {
                 try {
                     SQDB.insert(TABLE_ORIGINAL_MSG, null, values);
                    // MainActivity.dbHandler.close();
+                    Commons.updateLastTime(smsBeans.getTime());
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -321,9 +334,11 @@ public class DataHelperClass {
 
         //DBOpenHelperClass DBOHC = DBOpenHelperClass.getSharedObject(mContext);
         SQLiteDatabase SQDB = MyApplication.dbHandler.getWritableDb();;
-        if (checkAccountData(genericBeans.getTransaction_type().equals(Commons.TRANSACTION_TYPE_CREDIT) ? "0" : "1",
+        if (isAccountRecordExist(genericBeans.getAccount_type(),
+                //.equals(Commons.TRANSACTION_TYPE_CREDIT) ? "0" : "1",
                 genericBeans.getAccount_number(), genericBeans.getAccount_provider())) {
-            updateAccountData(genericBeans.getTransaction_type().equals(Commons.TRANSACTION_TYPE_CREDIT) ? "0" : "1",
+            updateAccountData(genericBeans.getTransaction_type(),
+                    //.equals(Commons.TRANSACTION_TYPE_CREDIT) ? "0" : "1",
                     genericBeans.getAccount_number(), genericBeans.getAccount_provider(), genericBeans.getAmount());
         } else {
             ContentValues values = new ContentValues();
@@ -369,6 +384,25 @@ public class DataHelperClass {
         }
     }
 
+    public static void insertMessageResponse(String responseId, String msgResponse) {
+
+        //DBOpenHelperClass DBOHC = DBOpenHelperClass.getSharedObject(mContext);
+        SQLiteDatabase SQDB = MyApplication.dbHandler.getWritableDb();
+            ContentValues values = new ContentValues();
+            values.put(COLUMN_RESPONSE_ID, responseId);
+            values.put(COLUMN_RESPONSE, msgResponse);
+
+            SQDB.beginTransaction();
+            try {
+                SQDB.insert(TABLE_RESPONSE, null, values);
+                // MainActivity.dbHandler.close();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            SQDB.setTransactionSuccessful();
+            SQDB.endTransaction();
+
+    }
     public static void insertMerchant(String merchantId, String merchantName, String merchantDetails, String industryId) {
 
         //DBOpenHelperClass DBOHC = DBOpenHelperClass.getSharedObject(mContext);
@@ -500,7 +534,37 @@ public class DataHelperClass {
         SQDB.setTransactionSuccessful();
         SQDB.endTransaction();
     }
+    public static boolean isAccountRecordExist(String accountType, String accountNumber, String accountProvider) {
 
+//        Cursor cursor = db.query(TABLE_ACCOUNTS, null,
+//                COLUMN_ACCOUNT_TYPE + "=? and " + COLUMN_ACCOUNT_NUMBER + "=? and " + COLUMN_ACCOUNT_PROVIDER + "=?  ",
+ //               new String[]{accountType, accountNumber, accountProvider}, null, null, null);
+        String selectQuery = "SELECT * FROM " + TABLE_ACCOUNTS + " WHERE " + COLUMN_ACCOUNT_TYPE + " = '" + accountType.trim().toString() + "' and "+
+                COLUMN_ACCOUNT_NUMBER +" = '" + accountNumber.trim().toString() + "' and "+COLUMN_ACCOUNT_PROVIDER+ "  = '" + accountProvider.trim().toString() + "'";
+
+        // DBOpenHelperClass DBOHC = DBOpenHelperClass.getSharedObject(mContext);
+        SQLiteDatabase db = MyApplication.dbHandler.getWritableDb();
+        Cursor cursor = db.rawQuery(selectQuery, null);
+        boolean isexit = false;
+        if (cursor != null) {
+            try {
+
+                isexit = cursor.getCount() > 0 ? true : false;
+            } catch (Exception e) {
+                Log.d("W for file", e.getMessage().toString());
+            } finally {
+                try {
+                    if (!cursor.isClosed()) {
+                        //   cursor.close();
+                    }
+                    cursor = null;
+                } catch (Exception e) {
+                    Log.e("While closing cursor", e.getMessage().toString());
+                }
+            }
+        }
+        return isexit;
+    }
     public static boolean isRecordExist(String id, String tableName, String columnName) {
         String selectQuery = "SELECT * FROM " + tableName + " WHERE " + columnName + " = " + id;
 
@@ -849,7 +913,7 @@ public class DataHelperClass {
                         try {
                             amountbalance = cursor.getDouble(0);
                             amountspent = cursor.getDouble(1);
-                            id = cursor.getInt(1);
+                            id = cursor.getInt(2);
 
                         } catch (Exception e) {
                             e.printStackTrace();
@@ -873,7 +937,7 @@ public class DataHelperClass {
         values.put(COLUMN_ACCOUNT_BALANCE, amountbalance - Double.parseDouble(newAmount));
         values.put(COLUMN_ACCOUNT_SPENT, amountspent + Double.parseDouble(newAmount));
 
-        long updatecheck = db.update(TABLE_ACCOUNTS, values, COLUMN_ACCOUNT_ID + " =" + id, null);
+        long updatecheck = db.update(TABLE_ACCOUNTS, values, COLUMN_ACCOUNT_ID + " = " + id, null);
     }
 
     public static ArrayList<String> getTablews() {
@@ -945,25 +1009,30 @@ public class DataHelperClass {
     }
 
 
-    public static ArrayList<IncomeBeans> getSpentAndIncomeData(Context context, String isSpent, String month) {
+    public static ArrayList<IncomeBeans> getSpentAndIncomeData(Context context, String isSpent, String month ,String year) {
         ArrayList<IncomeBeans> incomeBeanses = new ArrayList<>();
         try {
             //DBOpenHelperClass DBOHC = DBOpenHelperClass.getSharedObject(mContext);
             SQLiteDatabase db = MyApplication.dbHandler.getWritableDb();
-            String query = "SELECT * " +
+            String query_old = "SELECT * " +
                     "FROM category_summary  cs INNER JOIN  category c on cs.category_id = c.category_id " +
-                    "WHERE cs.summary_month = '" + month + "' AND  cs.is_spent = '" + isSpent + "'";
+                    "WHERE cs.summary_month = '" + month + "' AND  cs.is_spent = '" + isSpent + "' AND  cs.summary_year = '" + year + "'";
+
+          String query = "select sum(no_of_transactions) as transaction_numbers, sum(category_summary.summary_amount), category.category_detail as amount , category.category_id from category_summary"+
+            " inner join category where category_summary.summary_month = '" + month + "' and category_summary.summary_year = '" + year + "' and category_summary.category_id=category.category_id and category_summary.is_spent = '" + isSpent + "'";
+
             Cursor cursor = db.rawQuery(query, null);
             if (null != cursor) {
                 try {
                     if (cursor.moveToFirst()) {
                         while (!cursor.isAfterLast()) {
-                            String noOfTransc = cursor.getString(9);
-                            String amount = cursor.getString(5);
-                            String categoryDetail = cursor.getString(11);
-                            int categoryId = cursor.getInt(10);
+                            String noOfTransc = cursor.getString(0);
+                            String amount = cursor.getString(1);
+                            String categoryDetail = cursor.getString(2);
+                            int categoryId = cursor.getInt(3);
+                            if(null != noOfTransc)
                             incomeBeanses.add(
-                                    new IncomeBeans(context.getDrawable(R.drawable.bank), categoryDetail, noOfTransc + " Transactions", amount, "" + categoryId, ""));
+                                    new IncomeBeans(ContextCompat.getDrawable(context,R.drawable.bank), categoryDetail, noOfTransc + " Transactions", amount, "" + categoryId, ""));
                             cursor.moveToNext();
                         }
                     }
@@ -1009,7 +1078,7 @@ public class DataHelperClass {
                             int categoryId = cursor.getInt(8);
                             int merchantId = cursor.getInt(6);
                             incomeBeanses.add(
-                                    new SpendIndividualMonthBeans(context.getDrawable(R.drawable.bank), merchantName, date, amount,
+                                    new SpendIndividualMonthBeans(ContextCompat.getDrawable(context,R.drawable.bank), merchantName, date, amount,
                                             "" + categoryId, messageId, "" + merchantId, date, "" + accountId, isSpent.equals("1") ? true : false));
 
                             cursor.moveToNext();
@@ -1057,7 +1126,7 @@ public class DataHelperClass {
                             int categoryId = cursor.getInt(8);
                             int merchantId = cursor.getInt(6);
                             incomeBeanses.add(
-                                    new IncomeBeans(context.getDrawable(R.drawable.bank), merchantName, date, amount,
+                                    new IncomeBeans(ContextCompat.getDrawable(context,R.drawable.bank), merchantName, date, amount,
                                             "" + categoryId, messageId, "" + merchantId, date, "" + accountId, isSpent.equals("1") ? true : false));
 
                             cursor.moveToNext();
@@ -1142,7 +1211,7 @@ public class DataHelperClass {
                         do {
                             try {
                                 if (null != cursor.getString(0))
-                                    smsBody = cursor.getString(0);
+                                    smsBody = URLDecoder.decode(cursor.getString(0),"utf-8");
                             } catch (Exception e) {
                                 e.printStackTrace();
                             }

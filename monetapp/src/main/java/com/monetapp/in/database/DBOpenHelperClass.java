@@ -7,7 +7,7 @@ import android.util.Log;
 
 public class DBOpenHelperClass extends SQLiteOpenHelper {
 
-    private static final String DATABASE_NAME = "monetapp.db";
+    public static final String DATABASE_NAME = "monetapp.db";
     private static final int DATABASE_VERSION = 1;
 
     private static DBOpenHelperClass instance;

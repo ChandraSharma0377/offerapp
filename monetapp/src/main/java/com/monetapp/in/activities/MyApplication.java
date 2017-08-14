@@ -20,6 +20,8 @@ public class MyApplication extends Application {
     private static final String KEY_USER_NAME = "userName";
     private static final String KEY_EMAIL_ID = "emailID";
     private static final String KEY_MD5_MOBILE_ID = "mobileMd5";
+
+    private static final String KEY_LAST_MSG_UPDATE_TIME = "lastSMSdbUpdateTime";
     public  static DBOpenHelperClass dbHandler;
     @Override
     public void onCreate() {
@@ -46,6 +48,10 @@ public class MyApplication extends Application {
     public static String getMobileNo() {
         return sharedpreferences.getString(KEY_MOBILE, "");
     }
+
+    public static long getLastSMSProcessTime() {
+        return sharedpreferences.getLong(KEY_LAST_MSG_UPDATE_TIME, -1);
+    }
     public static boolean isLoggedIn() {
         return sharedpreferences.getBoolean(IS_LOGIN, false);
     }
@@ -59,7 +65,11 @@ public class MyApplication extends Application {
         editor.putString(KEY_MD5_MOBILE_ID, Helper.md5(mobileNo));
         editor.commit();
     }
-
+    public static void setSharPreferanceTime(long time) {
+        SharedPreferences.Editor editor = sharedpreferences.edit();
+        editor.putLong(KEY_LAST_MSG_UPDATE_TIME, time);
+        editor.commit();
+    }
     public static String getMd5Mobile() {
         return sharedpreferences.getString(KEY_MD5_MOBILE_ID, Helper.md5(getMobileNo()));
     }

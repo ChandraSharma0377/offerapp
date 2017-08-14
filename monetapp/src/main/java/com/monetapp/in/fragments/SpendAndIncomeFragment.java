@@ -51,8 +51,11 @@ public class SpendAndIncomeFragment extends Fragment implements View.OnClickList
     private Spinner sp_filter;
     private ArrayList<BarDataBeans> barDataBeanses;
     private int currentMonth = 0;
+    private int preMonthValue = 0;
+    private int nextMonthValue = 0;
     private String nextMonth = "";
     private String preMonth = "";
+    private String year = "";
     public SpendAndIncomeFragment() {
         super();
     }
@@ -69,8 +72,12 @@ public class SpendAndIncomeFragment extends Fragment implements View.OnClickList
         tv_next.setOnClickListener(this);
         isSpendScreen = getArguments().getBoolean(Commons.KEY_IS_SPEND_SCREEN,false);
         currentMonth = Integer.parseInt(Commons.getCurrentMonth());
-        preMonth = Commons.getCurrentMonthName(currentMonth -1);
-        nextMonth = Commons.getCurrentMonthName(currentMonth+1);
+
+        nextMonthValue = currentMonth+1>12?1:currentMonth+1;
+        preMonthValue = currentMonth-1==0?12:currentMonth-1;
+        preMonth = Commons.getCurrentMonthName(preMonthValue);
+        nextMonth = Commons.getCurrentMonthName(nextMonthValue);
+        year = Commons.getCurrentYear();
         if(isSpendScreen) {
             updateLabels();
         }else{
@@ -88,6 +95,7 @@ public class SpendAndIncomeFragment extends Fragment implements View.OnClickList
                 b.putBoolean(Commons.KEY_IS_SPEND_SCREEN,isSpendScreen);
                 b.putString("category_id",arraylist.get(i).getCategoryId());
                 b.putString("month",Commons.getValueTwoDigit(""+currentMonth));
+                b.putString("year",year);
                 sicf.setArguments(b);
                 if (isSpendScreen) {
                     MainActivity.getMainScreenActivity().changeNavigationContentFragment(sicf, true);
@@ -144,34 +152,69 @@ public class SpendAndIncomeFragment extends Fragment implements View.OnClickList
 
     private void initData(){
         arraylist = new ArrayList<>();
-        arraylist = DataHelperClass.getSpentAndIncomeData(getActivity(),(isSpendScreen?"1":"0"),Commons.getCurrentMonth());
+        arraylist = DataHelperClass.getSpentAndIncomeData(getActivity(),(isSpendScreen?"1":"0"),Commons.getCurrentMonth(),year);
     }
     @Override
     public void onClick(View view) {
         int id = view.getId();
         switch (id){
             case R.id.tv_pre:
-                if(!tv_pre.getText().equals("Jan")){
-                    currentMonth = currentMonth-1;
-                    preMonth = Commons.getCurrentMonthName(currentMonth -1);
-                    nextMonth = Commons.getCurrentMonthName(currentMonth+1);
+                if(tv_pre.getText().equals("Dec")) {
+                    year = String.valueOf(Integer.parseInt(year)-1);
+                }
+             if(tv_pre.getText().equals("Jan")){
+                 updateMonthsValue(false);
+                   // currentMonth = 1;
+
+                    preMonth = Commons.getCurrentMonthName(preMonthValue);
+                    nextMonth = Commons.getCurrentMonthName(nextMonthValue);
                     arraylist = DataHelperClass.getSpentAndIncomeData(getActivity(),(isSpendScreen?"1":"0"),
-                            Commons.getValueTwoDigit(""+currentMonth));
+                            Commons.getValueTwoDigit(""+currentMonth),year);
+                    spendAndIncomeAdapter = new SpendAndIncomeAdapter(getActivity(), arraylist);
+                    list_view.setAdapter(spendAndIncomeAdapter);
+                    updateLabels();
+                }else {
+               //  currentMonth = currentMonth-1==0?12:currentMonth-1;
+                 updateMonthsValue(false);
+                 preMonth = Commons.getCurrentMonthName(preMonthValue);
+                 nextMonth = Commons.getCurrentMonthName(nextMonthValue);
+
+                 arraylist = DataHelperClass.getSpentAndIncomeData(getActivity(),(isSpendScreen?"1":"0"),
+                         Commons.getValueTwoDigit(""+currentMonth),year);
+                 spendAndIncomeAdapter = new SpendAndIncomeAdapter(getActivity(), arraylist);
+                 list_view.setAdapter(spendAndIncomeAdapter);
+                 updateLabels();
+             }
+
+                break;
+            case R.id.tv_next:
+                if (tv_next.getText().equals("Jan")){
+                    year = String.valueOf(Integer.parseInt(year) + 1);
+                }
+                if (tv_next.getText().equals("Dec")){
+                   // currentMonth = 12;
+                    updateMonthsValue(true);
+                    preMonth = Commons.getCurrentMonthName(preMonthValue);
+                    nextMonth = Commons.getCurrentMonthName(nextMonthValue);
+
+
+                    arraylist = DataHelperClass.getSpentAndIncomeData(getActivity().getApplicationContext(), (isSpendScreen ? "1" : "0"),
+                            Commons.getValueTwoDigit("" + currentMonth), year);
+                    spendAndIncomeAdapter = new SpendAndIncomeAdapter(getActivity(), arraylist);
+                    list_view.setAdapter(spendAndIncomeAdapter);
+                    updateLabels();
+                } else {
+                  //  currentMonth = currentMonth + 1;
+                    updateMonthsValue(true);
+                    preMonth = Commons.getCurrentMonthName(preMonthValue);
+                    nextMonth = Commons.getCurrentMonthName(nextMonthValue);
+
+                    arraylist = DataHelperClass.getSpentAndIncomeData(getActivity().getApplicationContext(), (isSpendScreen ? "1" : "0"),
+                            Commons.getValueTwoDigit("" + currentMonth), year);
                     spendAndIncomeAdapter = new SpendAndIncomeAdapter(getActivity(), arraylist);
                     list_view.setAdapter(spendAndIncomeAdapter);
                     updateLabels();
                 }
-
-                break;
-            case R.id.tv_next:
-                currentMonth = currentMonth+1;
-                preMonth = Commons.getCurrentMonthName(currentMonth -1);
-                nextMonth = Commons.getCurrentMonthName(currentMonth+1);
-                arraylist =  DataHelperClass.getSpentAndIncomeData(getActivity().getApplicationContext(),(isSpendScreen?"1":"0"),
-                        Commons.getValueTwoDigit(""+currentMonth));
-                spendAndIncomeAdapter = new SpendAndIncomeAdapter(getActivity(), arraylist);
-                list_view.setAdapter(spendAndIncomeAdapter);
-                updateLabels();
             break;
         }
     }
@@ -196,13 +239,60 @@ public class SpendAndIncomeFragment extends Fragment implements View.OnClickList
             barDataSet.setColors(ColorTemplate.MATERIAL_COLORS);
             ArrayList<IBarDataSet> dataSets = new ArrayList<IBarDataSet>();
             dataSets.add(barDataSet);
-
+          //  BarDataSet dataSet = new BarDataSet(entries, "description");
             BarData data = new BarData(dataSets);
             data.setValueTextSize(10f);
             //data.setValueTypeface(mTfLight);
             data.setBarWidth(0.5f);
             bar_chart.setData(data);
         }
+    }
+
+    private void setBaarData(){
+
+        // create BarEntry for Bar Group 1
+        ArrayList<BarEntry> bargroup1 = new ArrayList<>();
+        bargroup1.add(new BarEntry(8f, 0));
+        bargroup1.add(new BarEntry(2f, 1));
+        bargroup1.add(new BarEntry(5f, 2));
+        bargroup1.add(new BarEntry(20f, 3));
+        bargroup1.add(new BarEntry(15f, 4));
+        bargroup1.add(new BarEntry(19f, 5));
+
+// create BarEntry for Bar Group 1
+        ArrayList<BarEntry> bargroup2 = new ArrayList<>();
+        bargroup2.add(new BarEntry(6f, 0));
+        bargroup2.add(new BarEntry(10f, 1));
+        bargroup2.add(new BarEntry(5f, 2));
+        bargroup2.add(new BarEntry(25f, 3));
+        bargroup2.add(new BarEntry(4f, 4));
+        bargroup2.add(new BarEntry(17f, 5));
+
+// creating dataset for Bar Group1
+        BarDataSet barDataSet1 = new BarDataSet(bargroup1, "Bar Group 1");
+
+//barDataSet1.setColor(Color.rgb(0, 155, 0));
+        barDataSet1.setColors(ColorTemplate.COLORFUL_COLORS);
+
+// creating dataset for Bar Group 2
+        BarDataSet barDataSet2 = new BarDataSet(bargroup2, "Bar Group 2");
+        barDataSet2.setColors(ColorTemplate.COLORFUL_COLORS);
+
+        ArrayList<String> labels = new ArrayList<String>();
+        labels.add("2016");
+        labels.add("2015");
+        labels.add("2014");
+        labels.add("2013");
+        labels.add("2012");
+        labels.add("2011");
+
+        ArrayList<BarDataSet> dataSets = new ArrayList<>();  // combined all dataset into an arraylist
+        dataSets.add(barDataSet1);
+        dataSets.add(barDataSet2);
+
+// initialize the Bardata with argument labels and dataSet
+//        BarData data = new BarData(labels, dataSets);
+//        barChart.setData(data);
     }
     private void initBarChart() {
 
@@ -259,8 +349,22 @@ public class SpendAndIncomeFragment extends Fragment implements View.OnClickList
     }
 
     private void updateLabels(){
-        tv_list_title.setText("All Categories ("+Commons.getCurrentMonthName(currentMonth)+")");
+        tv_list_title.setText("All Categories ( "+Commons.getCurrentMonthName(currentMonth)+" "+year+" )");
         tv_pre.setText(preMonth);
         tv_next.setText(nextMonth);
+    }
+
+    private void updateMonthsValue(boolean isNextPressed){
+
+        if(isNextPressed){
+             nextMonthValue = nextMonthValue+1>12?1:nextMonthValue+1;
+             currentMonth = currentMonth+1>12?1:currentMonth+1;
+             preMonthValue = preMonthValue+1>12?1:preMonthValue+1;
+
+        }else{
+            nextMonthValue = nextMonthValue-1==0?12:nextMonthValue-1;
+            currentMonth = currentMonth-1==0?12:currentMonth-1;
+            preMonthValue = preMonthValue-1==0?12:preMonthValue-1;
+        }
     }
 }

@@ -15,7 +15,10 @@ import org.json.JSONObject;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Date;
 import java.util.List;
 
 public class SmsUtils {
@@ -24,7 +27,24 @@ public class SmsUtils {
         List<SmsBeans> lstSms = new ArrayList<SmsBeans>();
         Uri message = Uri.parse("content://sms/inbox");
         ContentResolver cr = context.getContentResolver();
-        Cursor c = cr.query(message, null, null, null, null);
+        Cursor c = null;
+        try {
+           // SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
+           // Date dateStart = formatter.parse("01-09-2016" + "T00:00:00");
+           // long l = 1472221883614L;
+
+                    //dateStart.getTime();
+            long time = MyApplication.getLastSMSProcessTime();
+            if(time == -1){
+                c = cr.query(message, null, null, null, null);
+            }else {
+                String filter = "date>=" + time;
+                c = cr.query(message, null, filter, null, null);
+            }
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+
         context.startManagingCursor(c);
         int totalSMS = c.getCount();
         if (c.moveToFirst()) {
@@ -50,6 +70,7 @@ public class SmsUtils {
             }
         }
         c.close();
+        Collections.reverse(lstSms);
         return lstSms;
     }
 
@@ -86,6 +107,7 @@ public class SmsUtils {
                 jsonObject.put("message_id", smsBeans.getId());
                 jsonObject.put("message_body", smsBeans.getMsg());
                 jsonObject.put("message_timestamp", smsBeans.getTime());
+                //jsonObject.put("message_timestamp", Commons.getFormattedDate(smsBeans.getTime()));
                 jsonArray.put(jsonObject);
             } catch (JSONException e) {
                 e.printStackTrace();

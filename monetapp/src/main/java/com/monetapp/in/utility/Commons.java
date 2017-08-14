@@ -3,12 +3,17 @@ package com.monetapp.in.utility;
 
 import android.content.Context;
 import android.os.Environment;
+import android.util.Log;
+
+import com.monetapp.in.activities.MyApplication;
 
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.nio.channels.FileChannel;
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Date;
 
 public class Commons {
 
@@ -56,7 +61,7 @@ public class Commons {
                 }
             }
         } catch (Exception e) {
-
+            e.printStackTrace();
         }
     }
 
@@ -141,7 +146,7 @@ public class Commons {
                 monthString = "Dec";
                 break;
             default:
-                monthString = "";
+                monthString = "Jan";
                 break;
         }
         return monthString;
@@ -151,5 +156,35 @@ public class Commons {
         if(month.length()==1)
             month =  "0"+month;
         return month;
+    }
+
+
+    public  static String getFormattedDate(String inputDate){
+        try {
+            Long timestamp = Long.parseLong(inputDate);
+            Calendar calendar = Calendar.getInstance();
+            calendar.setTimeInMillis(timestamp);
+            Date outputDate = calendar.getTime();
+            SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSSSSS");
+            String formattedDate=formatter.format(outputDate);
+            return formattedDate;
+        }catch (Exception e){
+            e.printStackTrace();
+            return "";
+        }
+    }
+
+    public static void updateLastTime(String inputtime) {
+        long msgTime = Long.valueOf(inputtime);
+        long lastTime = MyApplication.getLastSMSProcessTime();
+        if(lastTime == -1){
+            MyApplication.setSharPreferanceTime(msgTime);
+        }else{
+            if( Long.valueOf(msgTime).compareTo(Long.valueOf(lastTime)) > 0){
+                MyApplication.setSharPreferanceTime(msgTime);
+            }
+        }
+
+
     }
 }

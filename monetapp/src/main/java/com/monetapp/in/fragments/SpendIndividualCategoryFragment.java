@@ -24,7 +24,7 @@ public class SpendIndividualCategoryFragment extends Fragment {
     private IncomeAdapter incomeAdapter;
     private ArrayList<IncomeBeans> arraylist;
     private boolean isSpendScreen = false;
-    private String category_id,month;
+    private String category_id,month,year;
 
     public SpendIndividualCategoryFragment() {
         super();
@@ -39,6 +39,7 @@ public class SpendIndividualCategoryFragment extends Fragment {
         isSpendScreen = getArguments().getBoolean(Commons.KEY_IS_SPEND_SCREEN, false);
         month = getArguments().getString("month","");
         category_id = getArguments().getString("category_id","");
+        year = getArguments().getString("year","");
         initData();
         incomeAdapter = new IncomeAdapter(getActivity(), arraylist);
         list_view.setAdapter(incomeAdapter);
@@ -84,7 +85,7 @@ public class SpendIndividualCategoryFragment extends Fragment {
 
     private void initData() {
         arraylist = new ArrayList<>();
-        arraylist = DataHelperClass.getSpentIndividualCategoryData(getActivity(),(isSpendScreen?"1":"0"),month,Commons.getCurrentYear(),category_id);
+        arraylist = DataHelperClass.getSpentIndividualCategoryData(getActivity(),(isSpendScreen?"1":"0"),month,year,category_id);
 
     }
 
